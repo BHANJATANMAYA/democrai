@@ -60,7 +60,10 @@ export default function App() {
   }, [completedSteps]);
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
+    <div className="min-h-screen flex flex-col relative overflow-hidden hero-bg">
+      {/* Premium glassmorphism overlay over the hero-bg grid */}
+      <div className="fixed inset-0 pointer-events-none overlay z-[-5]"></div>
+
       {/* Decorative top-center ambient glow — purely visual, non-interactive */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-white opacity-90 blur-[120px] -z-10 pointer-events-none"></div>
 
@@ -87,11 +90,10 @@ export default function App() {
         </div>
 
         {/* ── Content Grid ────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 relative">
+        <div className="max-w-3xl mx-auto space-y-20 relative">
 
-          {/* Left column — step guide, guidance banner, timeline */}
-          <div className="lg:col-span-7 xl:col-span-8 space-y-20">
-            <section className="relative z-10">
+          {/* Main Column — step guide, guidance banner, timeline */}
+          <section className="relative z-10">
               <StepGuide
                 activeStep={activeStep}
                 completedSteps={completedSteps}
@@ -106,17 +108,12 @@ export default function App() {
               <GuidanceBanner completedCount={completedSteps.size} />
             </div>
 
-            <Timeline />
-          </div>
-
-          {/* Right column — sticky AI chat assistant */}
-          <div id="ai-assistant" className="lg:col-span-5 xl:col-span-4">
-            <div className="lg:sticky lg:top-28 z-30">
-              <ChatAssistant />
-            </div>
-          </div>
+          <Timeline />
         </div>
       </main>
+
+      {/* Floating Chat Widget */}
+      <ChatAssistant />
 
       <Footer onOpenLegal={setActiveLegalDoc} />
 

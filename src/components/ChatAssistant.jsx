@@ -21,14 +21,29 @@ const SUGGESTIONS = [
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 /** Animated AI avatar shown next to model messages */
-function AIAvatar() {
+function AIAvatar({ isTyping = false }) {
   return (
-    <div className="shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-[#111] to-[#444] flex items-center justify-center shadow-md ring-2 ring-white mt-1">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 3 3v2a3 3 0 0 1-3 3h-1v1a4 4 0 0 1-8 0v-1H7a3 3 0 0 1-3-3v-2a3 3 0 0 1 3-3h1V6a4 4 0 0 1 4-4z"/>
-        <circle cx="9" cy="10" r="1" fill="white" stroke="none"/>
-        <circle cx="15" cy="10" r="1" fill="white" stroke="none"/>
-      </svg>
+    <div className="shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-[#111] to-[#333] flex items-center justify-center shadow-md ring-2 ring-white mt-1 overflow-hidden">
+      {/* Container bobs slightly when happy/typing */}
+      <div className={`flex gap-1 items-center justify-center transition-transform duration-300 ${isTyping ? 'animate-bounce translate-y-0.5' : ''}`}>
+        {/* Left Eye */}
+        <div 
+          className={`w-[5px] transition-all duration-300 ${
+            isTyping 
+              ? 'h-[5px] border-t-2 border-white rounded-t-full bg-transparent mt-0.5 transform -rotate-12' 
+              : 'h-2 bg-white rounded-full animate-[blink_4s_infinite]'
+          }`}
+        ></div>
+        
+        {/* Right Eye */}
+        <div 
+          className={`w-[5px] transition-all duration-300 ${
+            isTyping 
+              ? 'h-[5px] border-t-2 border-white rounded-t-full bg-transparent mt-0.5 transform rotate-12' 
+              : 'h-2 bg-white rounded-full animate-[blink_4s_infinite_0.1s]'
+          }`}
+        ></div>
+      </div>
     </div>
   );
 }
@@ -37,7 +52,7 @@ function AIAvatar() {
 function TypingIndicator() {
   return (
     <div className="flex items-end gap-2 animate-in fade-in duration-300">
-      <AIAvatar />
+      <AIAvatar isTyping={true} />
       <div className="bg-white/90 border border-[#e5e5e5] rounded-2xl rounded-tl-sm px-5 py-4 flex gap-1.5 items-center shadow-sm backdrop-blur-sm">
         {[0, 0.18, 0.36].map((delay, i) => (
           <span
@@ -54,6 +69,7 @@ function TypingIndicator() {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function ChatAssistant() {
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([WELCOME_MESSAGE]);
   const [input, setInput]       = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -67,6 +83,39 @@ export default function ChatAssistant() {
   // ── Scroll ───────────────────────────────────────────────────────────────
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   useEffect(() => { scrollToBottom(); }, [messages, isLoading]);
+
+  // ── Floating Button Emotion Engine ───────────────────────────────────────
+  const [buttonEmotion, setButtonEmotion] = useState('idle');
+
+  useEffect(() => {
+    // Only cycle emotions if the chat is closed
+    if (isOpen) {
+      setButtonEmotion('idle');
+      return;
+    }
+
+    const emotions = [
+      'idle', 'idle', 'idle', 'idle', // Higher weight for idle
+      'happy', 'happy',
+      'look-left', 'look-right', 
+      'look-up'
+    ];
+
+    const emotionInterval = setInterval(() => {
+      const nextEmotion = emotions[Math.floor(Math.random() * emotions.length)];
+      setButtonEmotion(nextEmotion);
+      
+      // If it's an active emotion, return to idle after a short burst
+      if (nextEmotion !== 'idle') {
+        setTimeout(() => {
+          // Double check we are still closed before resetting
+          setButtonEmotion(prev => prev !== 'idle' ? 'idle' : prev);
+        }, 1200 + Math.random() * 800);
+      }
+    }, 3500);
+
+    return () => clearInterval(emotionInterval);
+  }, [isOpen]);
 
   // ── Typing Placeholder Effect ────────────────────────────────────────────
   useEffect(() => {
@@ -140,16 +189,54 @@ export default function ChatAssistant() {
 
   // ── Render ───────────────────────────────────────────────────────────────
   return (
-    <section aria-labelledby="chat-heading" className="w-full relative group">
+    <>
+      {/* Floating Ball Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className={`fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-[#111] to-[#333] shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-500 ring-4 ring-white/50 group ${
+          isOpen ? 'opacity-0 scale-50 pointer-events-none' : 'opacity-100 scale-100'
+        }`}
+        aria-label="Open DemocrAI Assistant"
+      >
+        <div className="absolute inset-0 rounded-full border-2 border-black/20 animate-ping" style={{ animationDuration: '3s' }}></div>
+        
+        {/* Larger Robot Eyes with Dynamic Emotions */}
+        <div className={`flex gap-2 items-center justify-center z-10 transition-transform duration-300 ${
+          buttonEmotion === 'happy' ? 'animate-bounce translate-y-0.5' : 
+          buttonEmotion === 'look-up' ? '-translate-y-1.5' : ''
+        }`}>
+          {/* Left Eye */}
+          <div className={`w-2 transition-all duration-300 ${
+            buttonEmotion === 'happy' ? 'h-2 border-t-[3px] border-white rounded-t-full bg-transparent transform -rotate-12 mt-1' :
+            buttonEmotion === 'look-left' ? 'h-3.5 bg-white rounded-full -translate-x-1.5' :
+            buttonEmotion === 'look-right' ? 'h-3.5 bg-white rounded-full translate-x-1.5' :
+            'h-3.5 bg-white rounded-full animate-[blink_4s_infinite]'
+          }`}></div>
+          {/* Right Eye */}
+          <div className={`w-2 transition-all duration-300 ${
+            buttonEmotion === 'happy' ? 'h-2 border-t-[3px] border-white rounded-t-full bg-transparent transform rotate-12 mt-1' :
+            buttonEmotion === 'look-left' ? 'h-3.5 bg-white rounded-full -translate-x-1.5' :
+            buttonEmotion === 'look-right' ? 'h-3.5 bg-white rounded-full translate-x-1.5' :
+            'h-3.5 bg-white rounded-full animate-[blink_4s_infinite_0.1s]'
+          }`}></div>
+        </div>
+      </button>
 
-      {/* Multi-layer ambient glow — intensifies on focus */}
-      <div className={`absolute -inset-2 rounded-[2rem] blur-2xl transition-opacity duration-700 pointer-events-none
-        bg-gradient-to-br from-[#d4d4d4]/40 via-transparent to-[#d4d4d4]/20
-        ${isFocused ? 'opacity-100' : 'opacity-40 group-hover:opacity-70'}`}
-      />
+      {/* Chat Panel */}
+      <section 
+        aria-labelledby="chat-heading" 
+        className={`fixed bottom-6 right-6 z-50 w-full max-w-[400px] transition-all duration-500 origin-bottom-right ${
+          isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-10 pointer-events-none'
+        }`}
+      >
+        {/* Multi-layer ambient glow — intensifies on focus */}
+        <div className={`absolute -inset-2 rounded-[2rem] blur-2xl transition-opacity duration-700 pointer-events-none
+          bg-gradient-to-br from-[#d4d4d4]/40 via-transparent to-[#d4d4d4]/20
+          ${isFocused ? 'opacity-100' : 'opacity-40 group-hover:opacity-70'}`}
+        />
 
-      {/* Panel */}
-      <div className="relative rounded-[1.5rem] border border-[#e0e0e0] shadow-2xl overflow-hidden flex flex-col h-[700px] transition-all duration-500">
+        {/* Panel */}
+        <div className="relative rounded-[1.5rem] border border-[#e0e0e0] shadow-2xl overflow-hidden flex flex-col h-[600px] bg-white transition-all duration-500">
 
         {/* Animated aurora background behind the whole panel */}
         <div className="absolute inset-0 -z-10 overflow-hidden rounded-[1.5rem]">
@@ -175,13 +262,27 @@ export default function ChatAssistant() {
             </div>
           </div>
 
-          {/* Live status pill */}
-          <div className="flex items-center gap-1.5 bg-[#f5f5f5] border border-[#e5e5e5] rounded-full px-2.5 py-1">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-            </span>
-            <span className="text-[8px] font-bold text-[#555] uppercase tracking-widest">Live</span>
+          {/* Live status & Close Button */}
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-1.5 bg-[#f5f5f5] border border-[#e5e5e5] rounded-full px-2.5 py-1">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+              </span>
+              <span className="text-[8px] font-bold text-[#555] uppercase tracking-widest">Live</span>
+            </div>
+            
+            {/* Close Button */}
+            <button 
+              onClick={() => setIsOpen(false)}
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-[#f5f5f5] text-[#666] hover:bg-[#e5e5e5] hover:text-black transition-colors"
+              aria-label="Close Assistant"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -279,8 +380,9 @@ export default function ChatAssistant() {
               {charCount}/{MAX_CHAR_LIMIT}
             </span>
           </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

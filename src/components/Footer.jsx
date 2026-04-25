@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Footer({ onOpenLegal }) {
   return (
-    <footer role="contentinfo" className="bg-[#fafafa] pt-24 pb-12 border-t border-[#e5e5e5] mt-auto relative overflow-hidden">
+    <footer role="contentinfo" className="footer-bg pt-24 pb-12 border-t border-[#e5e5e5] mt-auto relative overflow-hidden">
       {/* Subtle radial gradient background for depth */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-white opacity-60 blur-[100px] -z-10 pointer-events-none"></div>
 
@@ -25,18 +25,6 @@ export default function Footer({ onOpenLegal }) {
             <ul className="space-y-4">
               <li><a href="#" className="text-sm text-[#666666] hover:text-black transition-colors duration-200">Voter Registration</a></li>
               <li><a href="#" className="text-sm text-[#666666] hover:text-black transition-colors duration-200">Election Tracking</a></li>
-              <li>
-                <a 
-                  href="#ai-assistant" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById('ai-assistant')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
-                  className="text-sm text-[#666666] hover:text-black transition-colors duration-200"
-                >
-                  AI Assistant
-                </a>
-              </li>
             </ul>
           </div>
 
