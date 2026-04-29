@@ -140,7 +140,7 @@ npm run test:watch        # Watch mode for development
 
 1. **Clone and install:**
    ```bash
-   git clone https://github.com/your-username/democrai.git
+   git clone https://github.com/BHANJATANMAYA/democrai.git
    cd democrai
    npm install
    ```
