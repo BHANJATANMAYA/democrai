@@ -1,5 +1,20 @@
+/**
+ * @fileoverview LegalModal — Accessible dialog for privacy, terms, and data policies
+ * ACCESSIBILITY: role="dialog", aria-modal, aria-labelledby, focus trap, scroll lock
+ * @module components/LegalModal
+ */
 import React, { useEffect } from 'react';
 
+/**
+ * Renders an accessible modal dialog for legal documents.
+ * Supports 'privacy', 'terms', and 'data' document types.
+ * Locks body scroll when open and restores it on unmount.
+ *
+ * @param {Object} props
+ * @param {'privacy'|'terms'|'data'} props.docType - Which legal document to display
+ * @param {Function} props.onClose - Callback to close the modal
+ * @returns {React.ReactElement|null}
+ */
 export default function LegalModal({ docType, onClose }) {
   // Prevent scrolling on the body when modal is open
   useEffect(() => {

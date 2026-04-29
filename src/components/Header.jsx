@@ -1,5 +1,14 @@
+/**
+ * @fileoverview Header — Fixed top navigation bar with app branding
+ * ACCESSIBILITY: role="banner", semantic h1, keyboard-focusable
+ * @module components/Header
+ */
 import React from 'react';
 
+/**
+ * Renders the fixed glassmorphic header bar with the DemocrAI logo and beta badge.
+ * @returns {React.ReactElement}
+ */
 export default function Header() {
   return (
     <header role="banner" className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[500px] transition-all duration-500 animate-in fade-in slide-in-from-top-8">

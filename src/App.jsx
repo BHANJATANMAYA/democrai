@@ -1,3 +1,10 @@
+/**
+ * @fileoverview App — Root application component for DemocrAI
+ * Orchestrates the election step guide, timeline, chat assistant, and legal modals.
+ * Manages step progression state with sequential locking (each step requires prior completion).
+ *
+ * @module App
+ */
 import React, { useState, useCallback } from 'react';
 import Header from './components/Header';
 import StepGuide from './components/StepGuide';
@@ -8,9 +15,15 @@ import Footer from './components/Footer';
 import LegalModal from './components/LegalModal';
 import { ELECTION_STEPS } from './constants/electionData';
 
-// Total number of steps minus 1 (0-indexed). Used to prevent advancing past the last step.
+/** Total number of steps minus 1 (0-indexed). Used to prevent advancing past the last step. */
 const MAX_STEP_INDEX = ELECTION_STEPS.length - 1;
 
+/**
+ * Root application component.
+ * Manages election step state, legal modal visibility, and renders all page sections.
+ *
+ * @returns {React.ReactElement}
+ */
 export default function App() {
   // Index of the currently expanded/active step card
   const [activeStep, setActiveStep] = useState(0);

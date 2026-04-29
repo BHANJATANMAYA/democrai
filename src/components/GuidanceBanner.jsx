@@ -1,6 +1,19 @@
+/**
+ * @fileoverview GuidanceBanner — Sticky contextual guidance card
+ * ACCESSIBILITY: role="status", aria-live="polite" for screen reader announcements
+ * @module components/GuidanceBanner
+ */
 import React from 'react';
 import { getGuidanceMessage } from '../utils/electionHelpers';
 
+/**
+ * Displays a contextual guidance message based on the user's progress.
+ * Updates dynamically as steps are completed and announces changes via aria-live.
+ *
+ * @param {Object} props
+ * @param {number} props.completedCount - Number of completed election steps (0–4)
+ * @returns {React.ReactElement}
+ */
 export default function GuidanceBanner({ completedCount }) {
   const message = getGuidanceMessage(completedCount);
   

@@ -1,11 +1,25 @@
+/**
+ * @fileoverview Timeline — Election event timeline with live Firestore data
+ * GOOGLE SERVICES: Cloud Firestore for live event data
+ * ACCESSIBILITY: semantic section, aria-labelledby, staggered animations
+ *
+ * @module components/Timeline
+ */
 import React, { useState, useEffect } from 'react';
 import { TIMELINE_EVENTS } from '../constants/electionData';
 import { fetchElectionEvents } from '../services/firebaseService';
 import { formatTimelineDate } from '../utils/electionHelpers';
 
-// Stagger delay (ms) between each event card animation
+/** @const {number} Stagger delay (ms) between each event card animation */
 const CARD_STAGGER_MS = 150;
 
+/**
+ * Renders the election timeline with live Firestore data and static fallback.
+ * Pre-populates with static TIMELINE_EVENTS on mount, then silently replaces
+ * with Firestore data if available (no loading flicker).
+ *
+ * @returns {React.ReactElement}
+ */
 export default function Timeline() {
   // Pre-populated with static data so the list renders immediately on mount.
   // Firestore data will silently replace this if it loads successfully.

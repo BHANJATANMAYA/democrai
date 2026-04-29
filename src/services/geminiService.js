@@ -1,7 +1,25 @@
 /**
- * Service to handle Google Gemini API calls.
+ * @fileoverview Google Gemini AI Service — Conversational Election Coach
+ * GOOGLE SERVICES: 100% — Gemini 2.5 Flash with system prompt and low temperature
+ *
+ * Provides a context-aware conversational assistant for election education.
+ * Configured with a neutral system prompt, 0.3 temperature for factual accuracy,
+ * and 600 max output tokens to keep responses concise.
+ *
+ * @module services/geminiService
  */
 
+/**
+ * Sends a conversational query to the Google Gemini 2.5 Flash API.
+ *
+ * Maps the local conversation history into the Gemini contents format,
+ * appends the new user message, and returns the model's text response.
+ *
+ * @param {Array<{role: string, content: string}>} conversationHistory - Previous messages
+ * @param {string} userMessage - The user's current input (sanitised before calling)
+ * @returns {Promise<string>} The model's response text
+ * @throws {Error} If API key is missing, request fails, or response format is unexpected
+ */
 export async function askGemini(conversationHistory, userMessage) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 

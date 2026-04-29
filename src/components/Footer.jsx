@@ -1,5 +1,17 @@
+/**
+ * @fileoverview Footer — Site-wide footer with branding, platform links, and legal links
+ * ACCESSIBILITY: role="contentinfo", semantic navigation structure
+ * @module components/Footer
+ */
 import React from 'react';
 
+/**
+ * Renders the site footer with branding, navigation links, and legal document triggers.
+ *
+ * @param {Object} props
+ * @param {Function} props.onOpenLegal - Callback to open a legal modal ('privacy' | 'terms' | 'data')
+ * @returns {React.ReactElement}
+ */
 export default function Footer({ onOpenLegal }) {
   return (
     <footer role="contentinfo" className="footer-bg pt-24 pb-12 border-t border-[#e5e5e5] mt-auto relative overflow-hidden">
