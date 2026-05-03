@@ -41,3 +41,5 @@ coverage/
 
 # Temp analysis repos (not part of the project)
 temp_*/
+
+prompt.md

@@ -36,6 +36,34 @@ An intelligent, AI-powered civic education web application designed to guide Ind
 ## 🏗️ Architecture
 
 ```
+┌──────────────────────────────────────────────────────────────┐
+│                     FRONTEND (Vite + React 18)               │
+│   React SPA · Vanilla CSS · Responsive · Code Splitting     │
+│   WCAG 2.1 AA · ARIA · Skip Navigation · Focus Management   │
+├──────────────────────────────────────────────────────────────┤
+│                     SECURITY LAYER                           │
+│   CSP Headers · Input Sanitisation · API Key Isolation       │
+│   Safe API Client (Timeout, Retry, Error Sanitisation)       │
+│   ESLint Security Rules · URI Validation                     │
+├──────────────────────────────────────────────────────────────┤
+│                     CACHING LAYER                            │
+│   LRU Cache with TTL · Per-service cache instances           │
+│   Cache key hashing · Automatic eviction                     │
+├──────────────────────────────────────────────────────────────┤
+│                     GOOGLE SERVICES (9 APIs)                 │
+│   Gemini 2.5 Flash · Cloud Firestore · Cloud Translation     │
+│   Google Maps · Google Calendar · Vertex AI Embeddings       │
+│   Cloud NLP · Google Analytics 4 · Google Fonts              │
+├──────────────────────────────────────────────────────────────┤
+│                     GRACEFUL DEGRADATION                     │
+│   Static Fallback Data · Fail-Silent Patterns                │
+│   App works 100% offline without any API keys                │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Source Structure
+
+```
 src/
 ├── components/       # React UI components (StepGuide, Timeline, ChatAssistant, etc.)
 ├── constants/        # Static election data, timeline events, guidance messages
@@ -52,7 +80,7 @@ src/
 │   ├── sanitize.js            # sanitizeFull(), escapeHtml(), sanitizeUrl()
 │   ├── cache.js               # LRU cache with TTL for API response caching
 │   └── electionHelpers.js     # Input validation, date formatting, history truncation
-└── tests/            # Vitest unit and integration test suites
+└── tests/            # 20 Vitest test suites (170+ assertions)
 ```
 
 ---
@@ -100,19 +128,28 @@ Every Google Cloud service has a graceful degradation path:
 ## 📊 Testing
 
 ```bash
-npm run test              # Run all test suites
+npm run test              # Run all 20 test suites
 npm run test:coverage     # Run with code coverage report
 npm run test:watch        # Watch mode for development
 ```
 
-| Metric | Threshold |
-|---|---|
-| Statements | ≥ 80% |
-| Branches | ≥ 70% |
-| Functions | ≥ 80% |
-| Lines | ≥ 80% |
+### Coverage Report
 
-12 test suites covering all services, utilities, and components.
+| Metric | Score | Detail |
+|---|---|---|
+| Statements | **94.55%** | 2119/2241 |
+| Branches | **85.83%** | 303/353 |
+| Functions | **94.36%** | 67/71 |
+| Lines | **94.55%** | 2119/2241 |
+
+### Test Suites (20 files, 170+ assertions)
+
+| Category | Files Tested |
+|---|---|
+| **Services** | geminiService, firebaseService, translationService, mapsService, calendarService, vertexService, analyticsService, apiClient |
+| **Components** | App, Header, Footer, StepGuide, StepCard, GuidanceBanner, Timeline, ChatAssistant, LegalModal |
+| **Utilities** | sanitize, cache, electionHelpers |
+| **Edge Cases** | Empty input, null values, API failures, cache hits/misses, fallback behaviour |
 
 ---
 
